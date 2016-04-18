@@ -1,10 +1,11 @@
 var React = require('react'),
 		Buttons = require('./buttons'),
-		Display = require('./display');
+		Display = require('./display'),
+		Splits = require('./splits');
 
 var Watch = React.createClass({
 	getInitialState: function() {
-		return {elapsed: 0, running: false};
+		return {elapsed: 0, running: false, splits: []};
 	},
 	tick: function () {
 		if (this.state.running) {
@@ -12,7 +13,11 @@ var Watch = React.createClass({
 		}
 	},
 	button1Pressed: function() {
-		if (!this.state.running) {
+		if (this.state.running) {
+			var splits = this.state.splits;
+			splits.push(this.state.elapsed);
+			this.setState({splits: splits});
+		} else {
 			this.setState({running: true});
 		}
 	},
@@ -20,7 +25,7 @@ var Watch = React.createClass({
 		if(this.state.running) {
 			this.setState({running: false});
 		} else {
-			this.setState({elapsed: 0});
+			this.setState({elapsed: 0, splits: []});
 		}
 	},
 	componentDidMount: function () {
@@ -34,6 +39,7 @@ var Watch = React.createClass({
 					running={this.state.running}
 					button1CallBack={this.button1Pressed}
 					button2CallBack={this.button2Pressed}/>
+					<Splits splits={this.state.splits} />
 			</div>
 		);
 	}
